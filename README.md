@@ -6,7 +6,7 @@
 
 ***
 
-This repository contains a AWS CodeBuild project that builds a Docker image using a Custom Docker Image as apposed an image that is managed and supplied by AWS CodeBuild. The build Custom Docker Image that is used is an official DockerHub release refered to as the "Docker-In-Docker" image, i.e. **docker:dind** . In other words what we are doing here is running the Docker Engine inside a Docker container which is then used to build a custom image.
+This repository contains an AWS CodeBuild project that builds a Docker image using a Custom Docker Image as apposed an image that is managed and supplied by the AWS CodeBuild service. The build Custom Docker Image that is used is an official DockerHub release refered to as the "Docker-In-Docker" image, i.e. **docker:dind** . In other words what we are doing here is running the Docker Engine inside a Docker container which is then used to build a custom image.
 
 Note: The CodeBuild project environment must be configured in Privileged Mode.
 
