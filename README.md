@@ -8,7 +8,12 @@
 
 This repository contains an AWS CodeBuild project that builds a Docker image using a Custom Docker Image as apposed an image that is managed and supplied by the AWS CodeBuild service. The build Custom Docker Image that is used is an official DockerHub release refered to as the "Docker-In-Docker" image, i.e. **docker:dind** . In other words what we are doing here is running the Docker Engine inside a Docker container which is then used to build a custom image.
 
-Note: The CodeBuild project environment must be configured in Privileged Mode.
+
+Note: 
+
+- The CodeBuild project environment must be configured in Privileged Mode.
+- Custom image > Environment type = Linux > Image registy = Other registry > External registry URL = docker:dind
+
 
 **Reference:**
 
@@ -20,5 +25,13 @@ Note: The CodeBuild project environment must be configured in Privileged Mode.
 
 - Docker CLI - [Runtime privilege and Linux capabilities](https://docs.docker.com/engine/reference/run/#runtime-privilege-and-linux-capabilities)
 
-
 - Docker Storage - [Use the OverlayFS storage driver](https://docs.docker.com/storage/storagedriver/overlayfs-driver/)
+
+
+> **Relavent APIs:**
+
+> [create-project](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codebuild/create-project.html)
+
+> [list-projects](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codebuild/list-projects.html)
+
+> [batch-get-projects](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/codebuild/batch-get-projects.html)

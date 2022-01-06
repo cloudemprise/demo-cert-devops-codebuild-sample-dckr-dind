@@ -1,0 +1,93 @@
+{
+    "name": "demo-cert-devops-codebuild-sample-dckr-dind",
+    "arn": "arn:aws:codebuild:eu-central-1:311674589786:project/demo-cert-devops-codebuild-sample-dckr-dind",
+    "description": "An AWS CodeBuild project that builds a custom Docker image using the \"Docker-In-Docker\" docker:dind image, i.e. running a Docker container inside Docker to build a custom image.",
+    "source": {
+        "type": "GITHUB",
+        "location": "https://github.com/cloudemprise/demo-cert-devops-codebuild-sample-dckr-dind.git",
+        "gitCloneDepth": 1,
+        "gitSubmodulesConfig": {
+            "fetchSubmodules": false
+        },
+        "reportBuildStatus": true,
+        "insecureSsl": false
+    },
+    "secondarySources": [],
+    "secondarySourceVersions": [],
+    "artifacts": {
+        "type": "NO_ARTIFACTS"
+    },
+    "secondaryArtifacts": [],
+    "cache": {
+        "type": "NO_CACHE"
+    },
+    "environment": {
+        "type": "LINUX_CONTAINER",
+        "image": "docker:dind",
+        "computeType": "BUILD_GENERAL1_SMALL",
+        "environmentVariables": [],
+        "privilegedMode": true,
+        "imagePullCredentialsType": "SERVICE_ROLE"
+    },
+    "serviceRole": "arn:aws:iam::311674589786:role/service-role/demo-cert-devops-codebuild-sample-dckr-dind-service-role",
+    "timeoutInMinutes": 20,
+    "queuedTimeoutInMinutes": 120,
+    "encryptionKey": "arn:aws:kms:eu-central-1:311674589786:alias/aws/s3",
+    "tags": [
+        {
+            "key": "Function",
+            "value": "cert-devops"
+        },
+        {
+            "key": "Project",
+            "value": "demo"
+        },
+        {
+            "key": "Reference",
+            "value": "manual"
+        }
+    ],
+    "created": "2022-01-05T15:42:05.209000+00:00",
+    "lastModified": "2022-01-05T19:17:53.754000+00:00",
+    "webhook": {
+        "url": "https://api.github.com/repos/cloudemprise/demo-cert-devops-codebuild-sample-dckr-dind/hooks/336756650",
+        "payloadUrl": "https://codebuild.eu-central-1.amazonaws.com/webhooks?t=eyJlbmNyeXB0ZWREYXRhIjoiMVpmcUlEZVhlanE0N1Bod1hrbWp5V3BvWUo3bGQ1bmtBOUxSN2hpdEhEMG81b1dRSHZPNXNqQXRGdWIxekhFaGI0MVN4M3lpTFVLdHhtaFpoMEFVWWI4PSIsIml2UGFyYW1ldGVyU3BlYyI6Ik4vVkg1YzR5Nnd3all3ak0iLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&v=1",
+        "filterGroups": [
+            [
+                {
+                    "type": "EVENT",
+                    "pattern": "PUSH",
+                    "excludeMatchedPattern": false
+                },
+                {
+                    "type": "ACTOR_ACCOUNT_ID",
+                    "pattern": "55949963",
+                    "excludeMatchedPattern": false
+                },
+                {
+                    "type": "HEAD_REF",
+                    "pattern": "^refs/heads/main$",
+                    "excludeMatchedPattern": false
+                }
+            ]
+        ],
+        "buildType": "BUILD"
+    },
+    "badge": {
+        "badgeEnabled": true,
+        "badgeRequestUrl": "https://codebuild.eu-central-1.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoiazhSSEZCeE1RSUowM3lUVTUyd0lZMDFGYlMzaEl1c1QycGpRRFVSNll3bkVtUTdoQWN6Y2RKc1ZaMjN4RlE2MjVDeUZUNzJwamdDTm5uVVlRbCsxT1lJPSIsIml2UGFyYW1ldGVyU3BlYyI6IjVKalRJc1RpVGlrZXZlbzEiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=main"
+    },
+    "logsConfig": {
+        "cloudWatchLogs": {
+            "status": "ENABLED",
+            "groupName": "/demo-cert-devops/codebuild",
+            "streamName": "sample-dckr-dind"
+        },
+        "s3Logs": {
+            "status": "ENABLED",
+            "location": "demo-cert-devops/codebuild/sample-dckr-dind",
+            "encryptionDisabled": false
+        }
+    },
+    "fileSystemLocations": []
+}
