@@ -1,0 +1,123 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+  Generator: "former2"
+Description: ""
+Resources:
+  IAMRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/service-role/"
+      RoleName: !Sub "${CodeBuildProject}-service-role"
+      AssumeRolePolicyDocument: "{\"Version\":\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"codebuild.amazonaws.com\"},\"Action\":\"sts:AssumeRole\"}]}"
+      MaxSessionDuration: 3600
+      ManagedPolicyArns: 
+      - !Sub "arn:aws:iam::${AWS::AccountId}:policy/service-role/CodeBuildCloudWatchLogsPolicy-${CodeBuildProject}-${AWS::Region}"
+      - !Sub "arn:aws:iam::${AWS::AccountId}:policy/service-role/CodeBuildBasePolicy-${CodeBuildProject}-${AWS::Region}"
+
+  CodeBuildProject:
+    Type: "AWS::CodeBuild::Project"
+    Properties:
+      Name: !GetAtt CodeCommitRepository.Name
+      Description: "An AWS CodeBuild project that builds a custom Docker image using the \"Docker-In-Docker\" docker:dind image, i.e. running a Docker container inside Docker to build a custom image."
+      Source: 
+        GitCloneDepth: 1
+        GitSubmodulesConfig: 
+          FetchSubmodules: false
+        InsecureSsl: false
+        Location: !Sub "https://github.com/cloudemprise/${CodeCommitRepository.Name}.git"
+        ReportBuildStatus: true
+        Type: "GITHUB"
+      Artifacts: 
+        Type: "NO_ARTIFACTS"
+      Cache: 
+        Type: "NO_CACHE"
+      Environment: 
+        ComputeType: "BUILD_GENERAL1_SMALL"
+        Image: "docker:dind"
+        ImagePullCredentialsType: "SERVICE_ROLE"
+        PrivilegedMode: true
+        Type: "LINUX_CONTAINER"
+      ServiceRole: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/${CodeCommitRepository.Name}-service-role"
+      TimeoutInMinutes: 20
+      QueuedTimeoutInMinutes: 120
+      EncryptionKey: !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:alias/aws/s3"
+      Tags: 
+      - 
+        Key: "Function"
+        Value: "cert-devops"
+      - 
+        Key: "Project"
+        Value: "demo"
+      - 
+        Key: "Reference"
+        Value: "manual"
+      BadgeEnabled: true
+      LogsConfig: 
+        CloudWatchLogs: 
+          Status: "ENABLED"
+          GroupName: !Sub "/${S3Bucket}/codebuild"
+          StreamName: "sample-dckr-dind"
+        S3Logs: 
+          Status: "ENABLED"
+          Location: !Sub "${S3Bucket}/codebuild/sample-dckr-dind"
+          EncryptionDisabled: false
+      Visibility: "PRIVATE"
+
+  SNSTopic:
+    Type: "AWS::SNS::Topic"
+    Properties:
+      DisplayName: ""
+      TopicName: !Sub "codestar-notifications-${CodeBuildProject}"
+
+  SNSTopicPolicy:
+    Type: "AWS::SNS::TopicPolicy"
+    Properties:
+      PolicyDocument: !Sub "{\"Version\":\"2008-10-17\",\"Statement\":[{\"Sid\":\"CodeNotification_publish\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"codestar-notifications.amazonaws.com\"},\"Action\":\"SNS:Publish\",\"Resource\":\"arn:aws:sns:${AWS::Region}:${AWS::AccountId}:codestar-notifications-${CodeBuildProject}\"}]}"
+      Topics: 
+      - !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:codestar-notifications-${CodeBuildProject}"
+
+  SNSSubscription:
+    Type: "AWS::SNS::Subscription"
+    Properties:
+      TopicArn: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:codestar-notifications-${CodeBuildProject}"
+      Endpoint: "dh.info@posteo.net"
+      Protocol: "email"
+      Region: !Ref AWS::Region
+
+  CodeCommitRepository:
+    Type: "AWS::CodeCommit::Repository"
+    Properties:
+      RepositoryDescription: "This repository contains a AWS CodeBuild project that builds a custom Docker image using the \"Docker-In-Docker\" docker:dind image, i.e. running a Docker container inside Docker to build a custom image."
+      RepositoryName: !Sub "${S3Bucket}-codebuild-sample-dckr-dind"
+
+  S3Bucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      BucketName: "demo-cert-devops"
+      Tags: 
+      - 
+        Key: "Function"
+        Value: "cert-devops"
+      - 
+        Key: "Project"
+        Value: "demo"
+      - 
+        Key: "Reference"
+        Value: "manual"
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - 
+          ServerSideEncryptionByDefault: 
+            SSEAlgorithm: "AES256"
+          BucketKeyEnabled: false
+
+  LogsLogGroup:
+    Type: "AWS::Logs::LogGroup"
+    Properties:
+      LogGroupName: !Sub "/${S3Bucket}/codebuild"
+
+  LogsLogStream:
+    Type: "AWS::Logs::LogStream"
+    Properties:
+      LogGroupName: !Sub "/${S3Bucket}/codebuild"
+      LogStreamName: "sample-dckr-dind/0febb897-7c10-4021-83df-11a5ecb01aa3"
