@@ -6,14 +6,14 @@
 
 ***
 
-This repository contains artifacts related to an AWS CodeBuild project and its auxillary components. These components build a Docker image using a 'Custom Docker Image' as apposed an image that is managed and supplied by the AWS CodeBuild service. The build 'Custom Docker Image' that is used is an official DockerHub release refered to as the "Docker-In-Docker" image, i.e. **docker:dind** . In other words what we are doing here is running the Docker Engine inside a Docker container which is then used to build a custom Docker image.
+This repository contains artifacts related to an AWS CodeBuild project and its auxiliary components. These components build a Docker image using a 'Custom Docker Image' as opposed an image that is managed and supplied by the AWS CodeBuild service. The build 'Custom Docker Image' that is used is an official DockerHub release referred to as the "Docker-In-Docker" image, i.e. **docker:dind** . In other words what we are doing here is running the Docker Engine inside a Docker container which is then used to build a custom Docker image.
 
 Also, documented here is a bash script highlighting useful API calls that relate to the AWS CodeBuild service in connection with this exercise as well as an AWS CloudFormation infrastructure template describing all the important AWS resources.
 
 Note: 
 
 - The CodeBuild project environment must be configured in Privileged Mode.
-- Custom image > Environment type = Linux > Image registy = Other registry > External registry URL = docker:dind
+- Custom image > Environment type = Linux > Image registry = Other registry > External registry URL = docker:dind
 
 **Reference:**
 
